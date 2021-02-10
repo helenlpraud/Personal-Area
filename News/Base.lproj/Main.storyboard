@@ -258,10 +258,10 @@
             </objects>
             <point key="canvasLocation" x="-142.02898550724638" y="196.875"/>
         </scene>
-        <!--View Controller-->
+        <!--Log In View Controller-->
         <scene sceneID="8XZ-IL-9vY">
             <objects>
-                <viewController id="fxJ-2I-CVG" sceneMemberID="viewController">
+                <viewController id="fxJ-2I-CVG" customClass="LogInViewController" customModule="News" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FER-Rw-q8O">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

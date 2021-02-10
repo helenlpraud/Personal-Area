@@ -11,15 +11,16 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     @IBOutlet var header: ProfileHeaderView!
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         view.frame = super.view.frame
         view.backgroundColor = .lightGray
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print(type(of: self), #function)
     }
     
     @IBAction func action(_ sender: UIButton) {

@@ -11,6 +11,8 @@ import UIKit
 
 class LogInViewController: UIViewController {
     
+    let profileVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProfileViewController")
+    
     let header = LoginUIView()
     
     override func viewWillLayoutSubviews() {
@@ -24,6 +26,12 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.view.addSubview(header)
+        
+        header.loginButton.addTarget(self, action: #selector(settingsButtonPressed), for: .touchUpInside)
+    }
+    
+    @objc func settingsButtonPressed(sender : UIButton) {
+        navigationController?.pushViewController(profileVC, animated: true)
     }
     
 }

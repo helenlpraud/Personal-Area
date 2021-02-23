@@ -9,47 +9,53 @@
 import Foundation
 import UIKit
 
-class LoginUIView: UIView {
+class LoginUIView: UIScrollView {
     
-    let logoImageView: UIImageView = {
+    private let containerView = UIView()
+    
+    private let containerInputView: UIView = {
+        let container = UIView()
+        container.toAutolayout()
+        return container
+    }()
+    
+    private let logoImageView: UIImageView = {
         let logo = UIImageView()
         logo.image = UIImage(named: "logo")
+        logo.toAutolayout()
         return logo
     }()
     
-    let grayView: UIView = {
+    private let grayView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGray6
         view.layer.borderColor = UIColor.lightGray.cgColor
         view.layer.borderWidth = 0.5
         view.layer.cornerRadius = 10
+        view.toAutolayout()
         return view
     }()
     
-    let grayLineView: UIView = {
+    private let separatorView: UIView = {
         let view = UIView()
         view.backgroundColor = .lightGray
+        view.toAutolayout()
         return view
     }()
 
-    static func setSettingsTextField(text: UITextField) {
-        text.textColor = .black
-        text.autocapitalizationType = .none
-        text.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+    static func setSettingsTextField(secureTextEntry : Bool) -> UITextField {
+        let textField = UITextField()
+        textField.textColor = .black
+        textField.autocapitalizationType = .none
+        textField.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        textField.toAutolayout()
+        textField.isSecureTextEntry = secureTextEntry
+        return textField
     }
 
-    let inputFirstTextField: UITextField = {
-        let inputFirst = UITextField()
-        setSettingsTextField(text: inputFirst)
-        return inputFirst
-    }()
-
-    let inputTwoTextField: UITextField = {
-        let inputTwo = UITextField()
-        setSettingsTextField(text: inputTwo)
-        inputTwo.isSecureTextEntry = true
-        return inputTwo
-    }()
+    private let loginTextField: UITextField = LoginUIView.setSettingsTextField(secureTextEntry: false)
+    
+    private let passwordTextField: UITextField = LoginUIView.setSettingsTextField(secureTextEntry: true)
 
     let loginButton: UIButton = {
         let loginButton = UIButton()
@@ -57,69 +63,86 @@ class LoginUIView: UIView {
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.setBackgroundImage(UIImage(named: "blue_pixel"), for: .normal)
         loginButton.layer.cornerRadius = 10
-//        loginButton.alpha = 1
+        loginButton.toAutolayout()
         return loginButton
     }()
 
-    func addSubview() {
-        addSubview(logoImageView)
-        addSubview(grayView)
-        addSubview(grayLineView)
-        addSubview(inputFirstTextField)
-        addSubview(inputTwoTextField)
-        addSubview(loginButton)
+    func addSubviews() {
+        addSubview(containerView)
+        
+        containerView.addSubview(logoImageView)
+        containerView.addSubview(grayView)
+        containerView.addSubview(loginButton)
+        
+        grayView.addSubview(separatorView)
+        grayView.addSubview(containerInputView)
+        
+        containerInputView.addSubview(loginTextField)
+        containerInputView.addSubview(passwordTextField)
     }
     
     func setConstraints() {
-        logoImageView.toAutolayout()
-        logoImageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 120).isActive = true
-        logoImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        logoImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        logoImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        containerView.toAutolayout()
         
-        grayView.toAutolayout()
-        grayView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 120).isActive = true
-        grayView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16).isActive = true
-        grayView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16).isActive = true
-        grayView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        let constraints = [
+            containerView.topAnchor.constraint(equalTo: topAnchor),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerView.widthAnchor.constraint(equalTo: widthAnchor),
         
-        grayLineView.toAutolayout()
-        grayLineView.topAnchor.constraint(equalTo: grayView.topAnchor, constant: 49.75).isActive = true
-        grayLineView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16).isActive = true
-        grayLineView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16).isActive = true
-        grayLineView.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+            logoImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 120),
+            logoImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 100),
+            logoImageView.heightAnchor.constraint(equalToConstant: 100),
         
-        inputFirstTextField.toAutolayout()
-        inputFirstTextField.topAnchor.constraint(equalTo: grayView.topAnchor).isActive = true
-        inputFirstTextField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16).isActive = true
-        inputFirstTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16).isActive = true
-        inputFirstTextField.heightAnchor.constraint(equalToConstant: 49.75).isActive = true
         
-        inputTwoTextField.toAutolayout()
-        inputTwoTextField.topAnchor.constraint(equalTo: inputFirstTextField.bottomAnchor, constant: 0.5).isActive = true
-        inputTwoTextField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16).isActive = true
-        inputTwoTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16).isActive = true
-        inputTwoTextField.heightAnchor.constraint(equalToConstant: 49.75).isActive = true
+            grayView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 120),
+            grayView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            grayView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            grayView.heightAnchor.constraint(equalToConstant: 100),
+            
+            containerInputView.topAnchor.constraint(equalTo: grayView.topAnchor),
+            containerInputView.leadingAnchor.constraint(equalTo: grayView.leadingAnchor, constant: 10),
+            containerInputView.trailingAnchor.constraint(equalTo: grayView.trailingAnchor),
+            containerInputView.heightAnchor.constraint(equalTo: grayView.heightAnchor),
         
-        loginButton.toAutolayout()
-        loginButton.topAnchor.constraint(equalTo: grayView.bottomAnchor, constant: 16).isActive = true
-        loginButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16).isActive = true
-        loginButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16).isActive = true
-        loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            loginTextField.topAnchor.constraint(equalTo: containerInputView.topAnchor),
+            loginTextField.leadingAnchor.constraint(equalTo: containerInputView.leadingAnchor),
+            loginTextField.trailingAnchor.constraint(equalTo: containerInputView.trailingAnchor),
+            loginTextField.heightAnchor.constraint(equalToConstant: 49.75),
+            
+            separatorView.topAnchor.constraint(equalTo: loginTextField.bottomAnchor),
+            separatorView.leadingAnchor.constraint(equalTo: grayView.leadingAnchor),
+            separatorView.trailingAnchor.constraint(equalTo: grayView.trailingAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 0.5),
         
+            passwordTextField.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
+            passwordTextField.leadingAnchor.constraint(equalTo: containerInputView.leadingAnchor),
+            passwordTextField.trailingAnchor.constraint(equalTo: containerInputView.trailingAnchor),
+            passwordTextField.bottomAnchor.constraint(equalTo: containerInputView.bottomAnchor),
+        
+            loginButton.topAnchor.constraint(equalTo: grayView.bottomAnchor, constant: 16),
+            loginButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            loginButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            loginButton.heightAnchor.constraint(equalToConstant: 50),
+            loginButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -24)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview()
+        addSubviews()
         setConstraints()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     
-        addSubview()
+        addSubviews()
         setConstraints()
     }
 }

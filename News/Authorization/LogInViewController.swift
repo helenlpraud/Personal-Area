@@ -11,12 +11,13 @@ import UIKit
 
 class LogInViewController: UIViewController {
     
-    let profileVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProfileViewController")
+    private let profileVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProfileViewController")
     
-    let header = LoginUIView()
+    private let loginView = LoginUIView()
     
     override func viewWillLayoutSubviews() {
-        header.frame = super.view.frame
+        super.viewWillLayoutSubviews()
+        loginView.frame = super.view.frame
     }
     
     required init?(coder: NSCoder) {
@@ -25,9 +26,28 @@ class LogInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        super.view.addSubview(header)
+        view.addSubview(loginView)
         
-        header.loginButton.addTarget(self, action: #selector(settingsButtonPressed), for: .touchUpInside)
+        loginView.loginButton.addTarget(self, action: #selector(settingsButtonPressed), for: .touchUpInside)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc fileprivate func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            loginView.contentInset.bottom = keyboardSize.height
+            loginView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        }
+    }
+    
+    @objc fileprivate func keyboardWillHide(notification: NSNotification) {
+        loginView.contentInset.bottom = .zero
+        loginView.verticalScrollIndicatorInsets = .zero
     }
     
     @objc func settingsButtonPressed(sender : UIButton) {
